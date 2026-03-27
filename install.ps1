@@ -17,7 +17,8 @@ Invoke-WebRequest -Uri $Url -OutFile $Dest -UseBasicParsing
 Write-Host "Installed acli to $Dest"
 
 # Add install directory to the user PATH if not already present
-$UserPath = [Environment]::GetEnvironmentVariable("PATH", "User") ?? ""
+$UserPath = [Environment]::GetEnvironmentVariable("PATH", "User")
+if ($null -eq $UserPath) { $UserPath = "" }
 if ($UserPath -notlike "*$InstallDir*") {
     [Environment]::SetEnvironmentVariable("PATH", "$UserPath;$InstallDir", "User")
     Write-Host "Added $InstallDir to your PATH."
