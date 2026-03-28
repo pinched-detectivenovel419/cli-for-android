@@ -21,24 +21,68 @@ $ acli doctor
 
 ---
 
+## Quick Start
+
+### 1. Install acli
+
+**macOS / Linux:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ErikHellman/android-cli/main/install.sh | bash
+```
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://raw.githubusercontent.com/ErikHellman/android-cli/main/install.ps1 | iex
+```
+
+**Windows via WSL:** Run the macOS/Linux command above inside your WSL terminal.
+
+### 2. Set up your environment
+
+```bash
+# macOS / Linux — add to ~/.zshrc or ~/.bashrc
+export ANDROID_HOME=~/Library/Android/sdk          # macOS default
+# export ANDROID_HOME=~/Android/Sdk               # Linux default
+```
+
+### 3. Verify everything works
+
+```bash
+acli doctor
+```
+
+`acli doctor` checks for Java, the Android SDK, `adb`, `sdkmanager`, and more. Follow any fix suggestions it prints.
+
+### 4. Bootstrap the SDK (if needed)
+
+If you don't have the Android SDK command-line tools installed yet:
+
+```bash
+acli sdk bootstrap          # downloads and installs command-line tools
+acli sdk licenses           # accept pending SDK licenses
+acli sdk install platform-tools
+```
+
+---
+
 ## Table of Contents
 
 - [Why acli](#why-acli)
-- [Runtime Dependencies](#runtime-dependencies)
-- [Build Dependencies](#build-dependencies)
-- [Installation](#installation)
-- [Environment Setup](#environment-setup)
 - [Command Reference](#command-reference)
 - [Global Flags](#global-flags)
 - [JSON Output and Automation](#json-output-and-automation)
-- [AI Agent Integration (Claude Code)](#ai-agent-integration-claude-code)
-- [Development Guide](#development-guide)
-- [Creating a Release](#creating-a-release)
-- [Project Structure](#project-structure)
 - [Configuration](#configuration)
 - [Shell Completion](#shell-completion)
 - [Self-Update](#self-update)
+- [AI Agent Integration (Claude Code)](#ai-agent-integration-claude-code)
+- [Runtime Dependencies](#runtime-dependencies)
+- [Installation Options](#installation-options)
 - [Error Handling](#error-handling)
+- [Development Guide](#development-guide)
+- [Creating a Release](#creating-a-release)
+- [Project Structure](#project-structure)
 
 ---
 
@@ -65,153 +109,23 @@ Android's command-line tooling is fragmented across six separate binaries with i
 
 ---
 
-## Runtime Dependencies
-
-`acli` is a thin wrapper around Android's tooling. The SDK command-line tools can be installed automatically via `acli sdk bootstrap`; everything else must be installed separately.
-
-### Required
-
-| Dependency | Version | Purpose | Install |
-|---|---|---|---|
-| **Android SDK Command-Line Tools** (`sdkmanager`, `avdmanager`) | Any recent | `acli sdk`, `acli avd`; also required for all other SDK-dependent commands | `acli sdk bootstrap` ← start here |
-| **Android Platform Tools** (`adb`, `fastboot`) | Any recent | `acli device`, `acli flash`, `acli instrument` | `acli sdk install platform-tools` |
-| **Java (JDK)** | 17 or newer (21 recommended) | Required by `sdkmanager`, `avdmanager`, and Gradle | [SDKMAN](https://sdkman.io) — see below |
-
-### Optional
-
-| Dependency | Purpose |
-|---|---|
-| **Android Emulator** (`emulator` binary) | `acli avd start` / `acli avd stop` — install with `acli sdk install emulator` |
-| **Gradle wrapper** (`gradlew` in project root) | All `acli build` commands |
-
-### Installing Java with SDKMAN
-
-[SDKMAN](https://sdkman.io) is the recommended way to install and manage Java versions on macOS and Linux. It handles download, extraction, and shell configuration automatically and makes switching between Java versions trivial.
-
-```bash
-# 1. Install SDKMAN
-curl -s "https://get.sdkman.io" | bash
-source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-# 2. Install Java 21 (Temurin — recommended for Android development)
-sdk install java 21-tem
-
-# 3. Verify
-java -version
-```
-
-To see all available JDK distributions and versions:
-
-```bash
-sdk list java
-```
-
-### SDK Auto-Discovery
-
-`acli` finds your Android SDK root automatically in this order:
-
-1. `$ANDROID_HOME` environment variable
-2. `$ANDROID_SDK_ROOT` environment variable
-3. Well-known platform paths:
-   - macOS: `~/Library/Android/sdk`
-   - Linux: `~/Android/Sdk`, `/opt/android-sdk`
-   - Windows: `%LOCALAPPDATA%\Android\Sdk`
-
-Run `acli doctor` to verify that everything is found correctly.
-
----
-
-## Build Dependencies
-
-You only need these if you are building `acli` from source.
-
-| Dependency | Version | Purpose |
-|---|---|---|
-| **Go** | 1.22 or newer | Compiler and toolchain |
-| **git** | Any | Version injection in the binary via `git describe` |
-| **make** | Any (optional) | Convenience targets; `go build` works directly without it |
-
-All Go library dependencies are declared in `go.mod` and downloaded automatically by `go mod download` or `go build`. No external package manager is required.
-
-**Direct library dependencies** (see `go.mod` for pinned versions):
-
-| Library | Purpose |
-|---|---|
-| `github.com/spf13/cobra` | CLI framework: command tree, `--help`, shell completion |
-| `github.com/spf13/viper` | Config file and environment variable management |
-| `github.com/charmbracelet/lipgloss` | Color-coded terminal output panels |
-| `golang.org/x/term` | TTY detection (switches between human and JSON output) |
-
----
-
-## Installation
-
-### Download a pre-built binary (recommended)
-
-Run this on macOS or Linux — it detects your OS and architecture automatically:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/ErikHellman/android-cli/main/install.sh | bash
-```
-
-**Windows** (PowerShell):
-
-```powershell
-irm https://raw.githubusercontent.com/ErikHellman/android-cli/main/install.ps1 | iex
-```
-
-Installs to `%LOCALAPPDATA%\Programs\acli\` and adds it to your user `PATH` — no administrator rights required.
-
-**Windows via WSL:** If you use Windows Subsystem for Linux, run the macOS/Linux command above inside your WSL terminal instead.
-
-### Build from source
-
-```bash
-git clone https://github.com/ErikHellman/android-cli.git
-cd acli
-make install          # builds and installs to $GOPATH/bin
-```
-
-Or without `make`:
-
-```bash
-go install github.com/ErikHellman/android-cli/cmd/acli@latest
-```
-
-### Verify the installation
-
-```bash
-acli --help
-acli doctor
-```
-
----
-
-## Environment Setup
-
-Set `$ANDROID_HOME` so `acli` can find your SDK:
-
-```bash
-# macOS / Linux — add to ~/.zshrc or ~/.bashrc
-export ANDROID_HOME=~/Library/Android/sdk          # macOS default
-# export ANDROID_HOME=~/Android/Sdk               # Linux default
-
-export PATH="$ANDROID_HOME/platform-tools:$PATH"   # adds adb, fastboot to PATH
-```
-
-Then reload your shell and confirm:
-
-```bash
-acli doctor
-```
-
----
-
 ## Command Reference
+
+### `acli doctor` — Environment Health Check
+
+Start here. This tells you what's working and what needs fixing.
+
+```bash
+acli doctor                            # human-readable checklist
+acli doctor --json                     # machine-readable (for CI)
+```
 
 ### `acli sdk` — SDK Package Management
 
 ```bash
+acli sdk bootstrap                     # install command-line tools from scratch
+acli sdk licenses                      # accept all pending licenses (CI-safe)
+
 acli sdk list                          # all packages
 acli sdk list --installed              # only installed packages
 acli sdk list --available              # only packages available to install
@@ -225,7 +139,6 @@ acli sdk install "ndk;26.1.10909125"
 
 acli sdk uninstall "platforms;android-33"
 acli sdk update                        # update all installed packages
-acli sdk licenses                      # accept all pending licenses (CI-safe)
 ```
 
 ### `acli avd` — Virtual Device Management
@@ -327,6 +240,24 @@ acli build run dependencies            # arbitrary Gradle task
 acli build run :app:generateDebugSources
 ```
 
+### `acli project` — Project Bootstrap
+
+Create a new Android project from a Git template repository.
+
+```bash
+# Create a new Compose app from a template
+acli project init https://github.com/ErikHellman/android-compose-app-template
+
+# Customize the project during creation
+acli project init https://github.com/ErikHellman/android-compose-app-template \
+  --output my-app \
+  --package com.example.myapp \
+  --min-sdk 26 --target-sdk 35 \
+  --java-version 17
+```
+
+The command clones the template, optionally refactors the package name and SDK versions, and initializes a fresh Git repository.
+
 ### `acli flash` — Fastboot Flashing
 
 The device must be in fastboot/bootloader mode first (`acli device reboot --bootloader`).
@@ -368,13 +299,6 @@ acli instrument input key KEYCODE_HOME
 acli skills install                    # project scope (.claude/skills/acli/SKILL.md)
 acli skills install --scope user       # user scope (~/.claude/skills/acli/SKILL.md)
 acli skills list                       # show installation status
-```
-
-### `acli doctor` — Environment Health Check
-
-```bash
-acli doctor                            # human-readable checklist
-acli doctor --json                     # machine-readable (for CI)
 ```
 
 ### `acli update` — Self-Update
@@ -455,6 +379,77 @@ acli sdk list --installed --json
 
 ---
 
+## Configuration
+
+`acli` reads `~/.acli/config.yaml` and environment variables prefixed with `ACLI_`. Environment variables take precedence over the config file.
+
+```yaml
+# ~/.acli/config.yaml
+
+# Default device serial to target when --device is not specified.
+# Equivalent to setting $ACLI_DEVICE in your shell.
+default_device: "emulator-5554"
+
+# Override Android SDK root (normally auto-discovered).
+# Equivalent to $ANDROID_HOME.
+sdk_root: ""
+
+# GitHub repository used for self-update checks.
+github_repo: "ErikHellman/android-cli"
+```
+
+### SDK Auto-Discovery
+
+`acli` finds your Android SDK root automatically in this order:
+
+1. `$ANDROID_HOME` environment variable
+2. `$ANDROID_SDK_ROOT` environment variable
+3. Well-known platform paths:
+   - macOS: `~/Library/Android/sdk`
+   - Linux: `~/Android/Sdk`, `/opt/android-sdk`
+   - Windows: `%LOCALAPPDATA%\Android\Sdk`
+
+Run `acli doctor` to verify that everything is found correctly.
+
+---
+
+## Shell Completion
+
+**Zsh:**
+```bash
+acli completion zsh > "${fpath[1]}/_acli"
+# Restart your shell or: autoload -U compinit && compinit
+```
+
+**Bash:**
+```bash
+acli completion bash > /etc/bash_completion.d/acli
+# or for a single user:
+acli completion bash > ~/.bash_completion
+```
+
+**Fish:**
+```bash
+acli completion fish > ~/.config/fish/completions/acli.fish
+```
+
+---
+
+## Self-Update
+
+```bash
+acli update check          # prints current version vs. latest GitHub release
+acli update install        # downloads and atomically replaces the current binary
+```
+
+The update command:
+1. Queries the GitHub Releases API for the latest release
+2. Downloads the asset matching the current OS and architecture
+3. Verifies the SHA256 checksum (if a `.sha256` asset is present)
+4. Atomically replaces the running binary
+
+---
+
 ## AI Agent Integration (Claude Code)
 
 `acli` ships with a built-in Claude Code skill that gives AI agents native control over the Android environment.
@@ -473,6 +468,109 @@ The skill template is also available at [`assets/skills/acli/SKILL.md`](assets/s
 
 ---
 
+## Runtime Dependencies
+
+`acli` is a thin wrapper around Android's tooling. The SDK command-line tools can be installed automatically via `acli sdk bootstrap`; everything else must be installed separately.
+
+### Required
+
+| Dependency | Version | Purpose | Install |
+|---|---|---|---|
+| **Android SDK Command-Line Tools** (`sdkmanager`, `avdmanager`) | Any recent | `acli sdk`, `acli avd`; also required for all other SDK-dependent commands | `acli sdk bootstrap` |
+| **Android Platform Tools** (`adb`, `fastboot`) | Any recent | `acli device`, `acli flash`, `acli instrument` | `acli sdk install platform-tools` |
+| **Java (JDK)** | 17 or newer (21 recommended) | Required by `sdkmanager`, `avdmanager`, and Gradle | [SDKMAN](https://sdkman.io) — see below |
+
+### Optional
+
+| Dependency | Purpose |
+|---|---|
+| **Android Emulator** (`emulator` binary) | `acli avd start` / `acli avd stop` — install with `acli sdk install emulator` |
+| **Gradle wrapper** (`gradlew` in project root) | All `acli build` commands |
+
+### Installing Java with SDKMAN
+
+[SDKMAN](https://sdkman.io) is the recommended way to install and manage Java versions on macOS and Linux.
+
+```bash
+# 1. Install SDKMAN
+curl -s "https://get.sdkman.io" | bash
+source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# 2. Install Java 21 (Temurin — recommended for Android development)
+sdk install java 21-tem
+
+# 3. Verify
+java -version
+```
+
+---
+
+## Installation Options
+
+Beyond the quick-start one-liner, here are all the ways to install `acli`.
+
+### Build from source
+
+```bash
+git clone https://github.com/ErikHellman/android-cli.git
+cd android-cli
+make install          # builds and installs to $GOPATH/bin
+```
+
+Or without `make`:
+
+```bash
+go install github.com/ErikHellman/android-cli/cmd/acli@latest
+```
+
+### Build dependencies
+
+You only need these if building from source:
+
+| Dependency | Version | Purpose |
+|---|---|---|
+| **Go** | 1.22 or newer | Compiler and toolchain |
+| **git** | Any | Version injection via `git describe` |
+| **make** | Any (optional) | Convenience targets; `go build` works directly without it |
+
+All Go library dependencies are declared in `go.mod` and downloaded automatically.
+
+---
+
+## Error Handling
+
+`acli` intercepts raw tool output and maps known failure modes to actionable messages. For example, when a Gradle build runs out of memory:
+
+**Before (raw Gradle output):**
+```
+> Task :app:compileDebugKotlin FAILED
+...
+java.lang.OutOfMemoryError: Java heap space
+	at ...50 lines of stack trace...
+```
+
+**After (acli):**
+```
+╭─ Error: out_of_memory ──────────────────────────────────╮
+│                                                           │
+│  Gradle ran out of memory.                               │
+│                                                           │
+│  The JVM heap was exhausted during the build. Increase   │
+│  the heap size in gradle.properties.                     │
+│                                                           │
+│  Try:                                                     │
+│    echo 'org.gradle.jvmargs=-Xmx4g' >> gradle.properties│
+│    acli build assemble                                    │
+│                                                           │
+╰───────────────────────────────────────────────────────────╯
+```
+
+In `--json` mode the same error is emitted to stderr as structured JSON, making it trivially parseable in CI or by an AI agent.
+
+The error catalog covers: device not found, multiple devices, unauthorized device, device offline, APK install failures (version conflict, insufficient storage, and others), SDK license not accepted, SDK package not found, network errors, AVD not found, emulator port in use, Gradle build failures, Gradle OOM, and Gradle wrapper not found.
+
+---
+
 ## Development Guide
 
 ### Prerequisites
@@ -485,21 +583,12 @@ The skill template is also available at [`assets/skills/acli/SKILL.md`](assets/s
 
 ```bash
 git clone https://github.com/ErikHellman/android-cli.git
-cd acli
+cd android-cli
 
-# Download dependencies (no network needed after this)
-go mod download
-
-# Build the binary into dist/
-make build
-# or: go build -o dist/acli ./cmd/acli
-
-# Run all unit tests
-make test
-# or: go test ./... -v
-
-# Install to $GOPATH/bin
-make install
+go mod download        # download dependencies
+make build             # build dist/acli
+make test              # run all tests
+make install           # install to $GOPATH/bin
 ```
 
 ### Makefile targets
@@ -517,16 +606,9 @@ make install
 ### Running tests
 
 ```bash
-# All tests
-go test ./...
-
-# Specific package
-go test ./pkg/aclerr/... -v
-go test ./pkg/runner/... -v
-go test ./pkg/output/... -v
-
-# With race detector
-go test -race ./...
+go test ./...                          # all tests
+go test ./pkg/aclerr/... -v           # specific package
+go test -race ./...                    # with race detector
 ```
 
 The unit tests in `pkg/` cover:
@@ -534,8 +616,6 @@ The unit tests in `pkg/` cover:
 - **`pkg/aclerr`** — all 15 error catalog patterns, `AcliError` methods, exit code mapping
 - **`pkg/runner`** — subprocess capture, passthrough, env, stdin, timeout, working directory, binary-not-found
 - **`pkg/output`** — JSON error format, JSON table schema, JSON checklist, human error rendering, nil error safety
-
-Integration tests (requiring a real Android SDK) are not automated but can be exercised manually with `acli doctor` after configuring `$ANDROID_HOME`.
 
 ### Making changes
 
@@ -576,7 +656,7 @@ The version string displayed by `acli --version` and used by `acli update check`
 -ldflags "-X main.version=$(git describe --tags) -X main.commit=$(git rev-parse --short HEAD)"
 ```
 
-`make build` and `make release` handle this automatically. If built outside of `make` without `-ldflags`, the version will be reported as `dev`.
+`make build` and `make release` handle this automatically. If built without `-ldflags`, the version will be reported as `dev`.
 
 ---
 
@@ -646,6 +726,7 @@ android-cli/
 │   ├── avd/service.go           # avdmanager + emulator wrapper
 │   ├── device/service.go        # adb wrapper + device list parser
 │   ├── build/service.go         # gradlew wrapper + project root discovery
+│   ├── project/service.go       # Git template cloning + refactoring
 │   ├── flash/service.go         # fastboot wrapper
 │   └── instrument/service.go    # adb shell instrumentation commands
 ├── pkg/
@@ -674,95 +755,3 @@ android-cli/
 ├── go.sum
 └── Makefile
 ```
-
----
-
-## Configuration
-
-`acli` reads `~/.acli/config.yaml` and environment variables prefixed with `ACLI_`. Environment variables take precedence over the config file.
-
-```yaml
-# ~/.acli/config.yaml
-
-# Default device serial to target when --device is not specified.
-# Equivalent to setting $ACLI_DEVICE in your shell.
-default_device: "emulator-5554"
-
-# Override Android SDK root (normally auto-discovered).
-# Equivalent to $ANDROID_HOME.
-sdk_root: ""
-
-# GitHub repository used for self-update checks.
-github_repo: "android-cli/acli"
-```
-
----
-
-## Shell Completion
-
-**Zsh:**
-```bash
-acli completion zsh > "${fpath[1]}/_acli"
-# Restart your shell or: autoload -U compinit && compinit
-```
-
-**Bash:**
-```bash
-acli completion bash > /etc/bash_completion.d/acli
-# or for a single user:
-acli completion bash > ~/.bash_completion
-```
-
-**Fish:**
-```bash
-acli completion fish > ~/.config/fish/completions/acli.fish
-```
-
----
-
-## Self-Update
-
-```bash
-acli update check          # prints current version vs. latest GitHub release
-acli update install        # downloads and atomically replaces the current binary
-```
-
-The update command:
-1. Queries the GitHub Releases API for the latest release
-2. Downloads the asset matching the current OS and architecture
-3. Verifies the SHA256 checksum (if a `.sha256` asset is present)
-4. Atomically replaces the running binary
-
----
-
-## Error Handling
-
-`acli` intercepts raw tool output and maps known failure modes to actionable messages. For example, when a Gradle build runs out of memory:
-
-**Before (raw Gradle output):**
-```
-> Task :app:compileDebugKotlin FAILED
-...
-java.lang.OutOfMemoryError: Java heap space
-	at ...50 lines of stack trace...
-```
-
-**After (acli):**
-```
-╭─ Error: out_of_memory ──────────────────────────────────╮
-│                                                           │
-│  Gradle ran out of memory.                               │
-│                                                           │
-│  The JVM heap was exhausted during the build. Increase   │
-│  the heap size in gradle.properties.                     │
-│                                                           │
-│  Try:                                                     │
-│    echo 'org.gradle.jvmargs=-Xmx4g' >> gradle.properties│
-│    acli build assemble                                    │
-│                                                           │
-╰───────────────────────────────────────────────────────────╯
-```
-
-In `--json` mode the same error is emitted to stderr as structured JSON, making it trivially parseable in CI or by an AI agent.
-
-The error catalog covers: device not found, multiple devices, unauthorized device, device offline, APK install failures (version conflict, insufficient storage, and others), SDK license not accepted, SDK package not found, network errors, AVD not found, emulator port in use, Gradle build failures, Gradle OOM, and Gradle wrapper not found.
