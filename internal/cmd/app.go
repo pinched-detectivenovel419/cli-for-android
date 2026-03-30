@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ErikHellman/android-cli/pkg/android"
-	"github.com/ErikHellman/android-cli/pkg/output"
-	"github.com/ErikHellman/android-cli/pkg/runner"
+	"github.com/ErikHellman/unified-android-cli/pkg/android"
+	"github.com/ErikHellman/unified-android-cli/pkg/output"
+	"github.com/ErikHellman/unified-android-cli/pkg/runner"
 	"github.com/spf13/cobra"
 )
 

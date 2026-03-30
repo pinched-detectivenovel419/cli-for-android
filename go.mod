@@ -1,4 +1,4 @@
-module github.com/ErikHellman/android-cli
+module github.com/ErikHellman/unified-android-cli
 
 go 1.26.1
 

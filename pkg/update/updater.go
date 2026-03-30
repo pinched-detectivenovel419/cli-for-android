@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-const defaultRepo = "android-cli/acli"
+const defaultRepo = "ErikHellman/unified-android-cli"
 
 // Release represents a GitHub release.
 type Release struct {

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="ErikHellman/android-cli"
+REPO="ErikHellman/unified-android-cli"
 BINARY="acli"
 
 # Detect OS and architecture

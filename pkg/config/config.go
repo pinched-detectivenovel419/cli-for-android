@@ -41,7 +41,7 @@ func Load() error {
 	v.AutomaticEnv()
 
 	// Defaults
-	v.SetDefault("github_repo", "ErikHellman/android-cli")
+	v.SetDefault("github_repo", "ErikHellman/unified-android-cli")
 
 	cfgDir, err := configDir()
 	if err != nil {

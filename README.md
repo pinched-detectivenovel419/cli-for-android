@@ -1,6 +1,6 @@
 # acli — Unified Android CLI
 
-[![CI](https://github.com/ErikHellman/android-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/ErikHellman/android-cli/actions/workflows/ci.yml)
+[![CI](https://github.com/ErikHellman/unified-android-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/ErikHellman/unified-android-cli/actions/workflows/ci.yml)
 
 A single, ergonomic command-line interface for all Android development tasks. `acli` wraps `sdkmanager`, `avdmanager`, `adb`, `fastboot`, and Gradle so you never have to memorize package paths, flag syntax, or which binary lives where.
 
@@ -28,13 +28,13 @@ $ acli doctor
 **macOS / Linux:**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ErikHellman/android-cli/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ErikHellman/unified-android-cli/main/install.sh | bash
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
-irm https://raw.githubusercontent.com/ErikHellman/android-cli/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/ErikHellman/unified-android-cli/main/install.ps1 | iex
 ```
 
 **Windows via WSL:** Run the macOS/Linux command above inside your WSL terminal.
@@ -395,7 +395,7 @@ default_device: "emulator-5554"
 sdk_root: ""
 
 # GitHub repository used for self-update checks.
-github_repo: "ErikHellman/android-cli"
+github_repo: "ErikHellman/unified-android-cli"
 ```
 
 ### SDK Auto-Discovery
@@ -512,15 +512,15 @@ Beyond the quick-start one-liner, here are all the ways to install `acli`.
 ### Build from source
 
 ```bash
-git clone https://github.com/ErikHellman/android-cli.git
-cd android-cli
+git clone https://github.com/ErikHellman/unified-android-cli.git
+cd unified-android-cli
 make install          # builds and installs to $GOPATH/bin
 ```
 
 Or without `make`:
 
 ```bash
-go install github.com/ErikHellman/android-cli/cmd/acli@latest
+go install github.com/ErikHellman/unified-android-cli/cmd/acli@latest
 ```
 
 ### Build dependencies
@@ -582,8 +582,8 @@ The error catalog covers: device not found, multiple devices, unauthorized devic
 ### Getting started
 
 ```bash
-git clone https://github.com/ErikHellman/android-cli.git
-cd android-cli
+git clone https://github.com/ErikHellman/unified-android-cli.git
+cd unified-android-cli
 
 go mod download        # download dependencies
 make build             # build dist/acli
@@ -694,7 +694,7 @@ This is the trigger. Pushing the tag starts the release workflow automatically �
 
 **Verifying the release**
 
-After the workflow completes (~2 minutes), check the [Releases page](https://github.com/ErikHellman/android-cli/releases) and confirm:
+After the workflow completes (~2 minutes), check the [Releases page](https://github.com/ErikHellman/unified-android-cli/releases) and confirm:
 - All 5 binaries are present
 - `checksums.txt` and `.sha256` sidecars are attached
 - `acli update check` reports the new version
@@ -704,7 +704,7 @@ After the workflow completes (~2 minutes), check the [Releases page](https://git
 ## Project Structure
 
 ```
-android-cli/
+unified-android-cli/
 ├── cmd/
 │   └── acli/
 │       └── main.go              # Entry point; injects version/commit
