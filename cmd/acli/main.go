@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/ErikHellman/android-cli/internal/cmd"
+	"github.com/ErikHellman/unified-android-cli/internal/cmd"
 )
 
 // version and commit are injected by the Makefile via -ldflags.

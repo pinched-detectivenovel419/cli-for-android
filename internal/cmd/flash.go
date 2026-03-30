@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ErikHellman/android-cli/internal/flash"
-	"github.com/ErikHellman/android-cli/pkg/android"
-	"github.com/ErikHellman/android-cli/pkg/output"
+	"github.com/ErikHellman/unified-android-cli/internal/flash"
+	"github.com/ErikHellman/unified-android-cli/pkg/android"
+	"github.com/ErikHellman/unified-android-cli/pkg/output"
 	"github.com/spf13/cobra"
 )
 

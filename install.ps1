@@ -1,7 +1,7 @@
 #Requires -Version 5.1
 $ErrorActionPreference = "Stop"
 
-$Repo    = "ErikHellman/android-cli"
+$Repo    = "ErikHellman/unified-android-cli"
 $Binary  = "acli"
 $Asset   = "${Binary}-windows-amd64.exe"
 $Url     = "https://github.com/${Repo}/releases/latest/download/${Asset}"

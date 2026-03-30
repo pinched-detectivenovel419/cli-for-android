@@ -10,8 +10,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ErikHellman/android-cli/pkg/aclerr"
-	"github.com/ErikHellman/android-cli/pkg/runner"
+	"github.com/ErikHellman/unified-android-cli/pkg/aclerr"
+	"github.com/ErikHellman/unified-android-cli/pkg/runner"
 )
 
 // Service provides project scaffolding operations.

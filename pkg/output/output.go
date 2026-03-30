@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ErikHellman/android-cli/pkg/aclerr"
+	"github.com/ErikHellman/unified-android-cli/pkg/aclerr"
 	"github.com/charmbracelet/lipgloss"
 	"golang.org/x/term"
 )

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ErikHellman/android-cli/internal/avd"
-	"github.com/ErikHellman/android-cli/pkg/android"
-	"github.com/ErikHellman/android-cli/pkg/output"
+	"github.com/ErikHellman/unified-android-cli/internal/avd"
+	"github.com/ErikHellman/unified-android-cli/pkg/android"
+	"github.com/ErikHellman/unified-android-cli/pkg/output"
 	"github.com/spf13/cobra"
 )
 

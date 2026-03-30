@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/ErikHellman/android-cli/pkg/output"
+	"github.com/ErikHellman/unified-android-cli/pkg/output"
 	"github.com/spf13/cobra"
 )
 

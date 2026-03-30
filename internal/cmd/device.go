@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/ErikHellman/android-cli/internal/device"
-	"github.com/ErikHellman/android-cli/pkg/android"
-	"github.com/ErikHellman/android-cli/pkg/output"
+	"github.com/ErikHellman/unified-android-cli/internal/device"
+	"github.com/ErikHellman/unified-android-cli/pkg/android"
+	"github.com/ErikHellman/unified-android-cli/pkg/output"
 	"github.com/spf13/cobra"
 )
 
