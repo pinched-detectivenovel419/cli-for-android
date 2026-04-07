@@ -1,4 +1,4 @@
-# acli — Unified Android CLI
+# acli — Unified CLI for Android
 
 [![CI](https://github.com/ErikHellman/unified-android-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/ErikHellman/unified-android-cli/actions/workflows/ci.yml)
 
